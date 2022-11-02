@@ -1,7 +1,7 @@
 # bach-demo-panama
 Multi-release application demo using project Panama's API
 
-##
+## build
 
 ```text
 $ java build.java
@@ -21,3 +21,7 @@ Exception in thread "main" java.lang.RuntimeException: jar -> 1
         at build.run(build.java:40)
         at build.main(build.java:24)
 ```
+
+## bug
+
+<https://bugs.openjdk.org/browse/JDK-8296119>
