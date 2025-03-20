@@ -30,7 +30,7 @@ jobs:
       - name: 'Compile Java module'
         run: |
           javac --version
-          javac -d out --module-source-path ./*/java --module demo
+          javac -d out --module-source-path */java --module demo
       - name: 'Compile and link native library'
         run: |
           cc --version
