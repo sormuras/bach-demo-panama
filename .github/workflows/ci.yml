@@ -34,7 +34,7 @@ jobs:
       - name: 'Compile and link native library'
         run: |
           cc --version
-          cc -shared -o libhelloworld.dylib demo/native/helloworld.c
+          cc -shared -o libhelloworld.so demo/native/helloworld.c
       - name: 'Run Java module'
         run: |
           java --version
