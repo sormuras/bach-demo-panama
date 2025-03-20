@@ -1,5 +1,8 @@
 # Compiled class file
+/out/
 *.class
+
+helloworld.*
 
 # Log file
 *.log
