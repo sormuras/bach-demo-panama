@@ -2,7 +2,7 @@
 /out/
 *.class
 
-helloworld.*
+/helloworld.*
 
 # Log file
 *.log
