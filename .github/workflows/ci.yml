@@ -1,0 +1,30 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ '*' ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Check out repository'
+        uses: actions/checkout@v4
+      - name: 'Set up JExtract'
+        uses: oracle-actions/setup-java@v1
+        with:
+          website: jdk.java.net
+          release: jextract
+      - name: 'Set up Java'
+        uses: oracle-actions/setup-java@v1
+        with:
+          website: jdk.java.net
+          release: GA
+      - name: 'Print versions of various tools'
+        run: |
+          jextract --version
+          java --version
+          cc --version
