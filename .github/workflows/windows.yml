@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: cmd
     steps:
       - name: 'Check out repository'
         uses: actions/checkout@v4
