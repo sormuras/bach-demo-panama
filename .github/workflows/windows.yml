@@ -1,0 +1,40 @@
+name: Windows
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ '*' ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Check out repository'
+        uses: actions/checkout@v4
+      - name: 'Set up jextract'
+        uses: oracle-actions/setup-java@v1
+        with:
+          website: jdk.java.net
+          release: jextract
+      - name: 'Set up Java'
+        uses: oracle-actions/setup-java@v1
+        with:
+          website: jdk.java.net
+          release: GA
+      - name: 'Generates Java bindings from native library header'
+        run: |
+          jextract --version
+          jextract --output demo/java --target-package demo --library helloworld demo/native/helloworld.h
+      - name: 'Compile Java module'
+        run: |
+          javac --version
+          javac -d out --module-source-path "./*/java" --module demo
+      - name: 'Compile and link native library'
+        run: |
+          cl /LD demo/native/helloworld.c /link /EXPORT:helloworld
+      - name: 'Run Java module'
+        run: |
+          java --version
+          java --enable-native-access demo --module-path out --module demo/demo.Main
