@@ -38,4 +38,5 @@ jobs:
       - name: 'Run Java module'
         run: |
           java --version
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
           java --enable-native-access demo --module-path out --module demo/demo.Main
