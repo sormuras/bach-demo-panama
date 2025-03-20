@@ -30,6 +30,7 @@ jobs:
       - name: 'Compile Java module'
         run: |
           javac --version
+          find | grep \\-info.java | sort
           javac -d out --module-source-path */java --module demo
       - name: 'Compile and link native library'
         run: |
