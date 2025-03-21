@@ -25,6 +25,7 @@ jobs:
           release: GA
       - name: 'Generates Java bindings from native library header'
         run: |
+          java -XshowSettings:properties --version
           jextract --version
           jextract --output demo/java --target-package demo --library helloworld demo/native/helloworld.h
       - name: 'Compile Java module'
