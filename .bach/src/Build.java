@@ -1,27 +1,42 @@
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.spi.ToolProvider;
 import java.util.stream.Stream;
 
 class Build {
   public static void main(String[] args) {
     System.out.println("Build runs on Java " + System.getProperty("java.version"));
-    // J:\tools\vs\2022\Community\VC\Auxiliary\Build\vcvars64.bat
-//    run(
-//        "cl",
-//        "/LD",
-//        "demo/native/helloworld.c",
-//        "/link",
-//        "/EXPORT:helloworld");
     run(
-        Path.of("J:/tools/jextract/jextract-22", "runtime", "bin", "java"),
+        findJextractHome().orElseThrow().resolve("runtime", "bin", "java"),
         "--module=org.openjdk.jextract/org.openjdk.jextract.JextractTool",
-        "--output","demo/java",
-        "--target-package","demo",
-        "--library","helloworld",
+        "--output",
+        "demo/java",
+        "--target-package",
+        "demo",
+        "--library",
+        "helloworld",
         "demo/native/helloworld.h");
-    run("javac", "-d", "out", "--module-source-path", "./*/java",  "--module=demo");
+    run("javac", "-d", "out", "--module-source-path", "./*/java", "--module=demo");
     run("java", "--enable-native-access=demo", "--module-path=out", "--module=demo/demo.Main");
+  }
+
+  private static Optional<Path> findJextractHome() {
+    var candidates =
+        Stream.concat(
+                Optional.ofNullable(System.getenv("JEXTRACT_HOME")).stream(),
+                System.getenv().keySet().stream().filter(key -> key.startsWith("JAVA_HOME")))
+            .toList();
+    for (var candidate : candidates) {
+      var home = Path.of(System.getenv(candidate));
+      if (Files.isDirectory(home)) {
+        if (Files.exists(home.resolve("bin", "jextract"))) {
+          return Optional.of(home);
+        }
+      }
+    }
+    return Optional.empty();
   }
 
   private static void run(String name, Object... arguments) {

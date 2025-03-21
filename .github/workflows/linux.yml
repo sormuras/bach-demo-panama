@@ -13,6 +13,10 @@ jobs:
     steps:
       - name: 'Check out repository'
         uses: actions/checkout@v4
+      - name: 'Compile and link native library'
+        run: |
+          cc --version
+          cc -shared -o libhelloworld.so demo/native/helloworld.c
       - name: 'Set up jextract'
         uses: oracle-actions/setup-java@v1
         with:
@@ -23,21 +27,6 @@ jobs:
         with:
           website: jdk.java.net
           release: GA
-      - name: 'Generates Java bindings from native library header'
+      - name: 'Build and run demo'
         run: |
-          java -XshowSettings:properties --version
-          jextract --version
-          jextract --output demo/java --target-package demo --library helloworld demo/native/helloworld.h
-      - name: 'Compile Java module'
-        run: |
-          javac --version
-          javac -d out --module-source-path "./*/java" --module demo
-      - name: 'Compile and link native library'
-        run: |
-          cc --version
-          cc -shared -o libhelloworld.so demo/native/helloworld.c
-      - name: 'Run Java module'
-        run: |
-          java --version
-          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
-          java --enable-native-access demo --module-path out --module demo/demo.Main
+          java --show-version .bach/src/Build.java

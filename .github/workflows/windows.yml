@@ -16,6 +16,10 @@ jobs:
     steps:
       - name: 'Check out repository'
         uses: actions/checkout@v4
+      - name: 'Compile and link native library'
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          cl /LD demo/native/helloworld.c /link /EXPORT:helloworld
       - name: 'Set up jextract'
         uses: oracle-actions/setup-java@v1
         with:
@@ -26,19 +30,6 @@ jobs:
         with:
           website: jdk.java.net
           release: GA
-      - name: 'Generates Java bindings from native library header'
+      - name: 'Build and run demo'
         run: |
-          jextract --version
-          jextract --output demo/java --target-package demo --library helloworld demo/native/helloworld.h
-      - name: 'Compile Java module'
-        run: |
-          javac --version
-          javac -d out --module-source-path "./*/java" --module demo
-      - name: 'Compile and link native library'
-        run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          cl /LD demo/native/helloworld.c /link /EXPORT:helloworld
-      - name: 'Run Java module'
-        run: |
-          java --version
-          java --enable-native-access demo --module-path out --module demo/demo.Main
+          java --show-version .bach/src/Build.java
