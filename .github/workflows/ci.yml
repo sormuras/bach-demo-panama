@@ -1,0 +1,41 @@
+name: Continuous Integration
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: 'Check out repository'
+        uses: actions/checkout@v4
+      - name: 'Compile and link native library on Linux'
+        if: runner.os == 'Linux'
+        run: |
+          cc --version
+          cc -shared -o libhelloworld.so demo/native/helloworld.c
+      - name: 'Compile and link native library on Windows'
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          cl /LD demo/native/helloworld.c /link /EXPORT:helloworld
+      - name: 'Set up jextract'
+        uses: oracle-actions/setup-java@v1
+        with:
+          website: jdk.java.net
+          release: jextract
+      - name: 'Set up Java'
+        uses: oracle-actions/setup-java@v1
+        with:
+          website: jdk.java.net
+          release: GA
+      - name: 'Build and run demo'
+        run: |
+          jextract --version
+          java --version
+          java .bach/src/Build.java
