@@ -67,6 +67,7 @@ class Build {
     try {
       var builder = new ProcessBuilder(program.toString());
       builder.command().addAll(List.of(args));
+      builder.environment().put("LD_LIBRARY_PATH", ".");
       var process = builder.inheritIO().start();
       var code = process.waitFor();
       if (code == 0) return;
